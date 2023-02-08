@@ -24,6 +24,8 @@ Users should be able to:
 
 ## Screenshot
 
+![image](./src/assets/design.png)
+
 ## Deploy
 
 - [vercel](https://todo-app-denny.vercel.app/)
