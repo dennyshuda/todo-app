@@ -12,6 +12,10 @@ function App() {
     setText("");
   }
 
+  function deleteTodoById(id: string) {
+    setTodos(todos.filter((todo) => todo.id !== id));
+  }
+
   return (
     <div className="App">
       <h1 className="text-center font-bold text-white text-4xl my-5">
@@ -58,7 +62,7 @@ function App() {
                         />
                       </svg>
                     </button>
-                    <button>
+                    <button onClick={() => deleteTodoById(todo.id)}>
                       <svg
                         className="inline-block cursor-pointer"
                         width="28"
