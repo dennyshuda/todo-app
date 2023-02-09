@@ -5,6 +5,9 @@ import uuid from "react-uuid";
 function App() {
   const [todos, setTodos] = useState<TodoType[]>([]);
   const [text, setText] = useState<string>("");
+  const [editMode, setEditMode] = useState<boolean>(false);
+  const [edit, setEdit] = useState<string>("");
+  const [editId, setEditId] = useState<string>("");
 
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -16,24 +19,61 @@ function App() {
     setTodos(todos.filter((todo) => todo.id !== id));
   }
 
+  function updateTodoById(id: string) {
+    setEditMode(!editMode);
+    todos.map((todo) => {
+      if (todo.id === id) {
+        setEdit(todo.text);
+        setEditId(todo.id);
+      }
+    });
+  }
+
+  function handleUpdate(event: React.FormEvent) {
+    event.preventDefault();
+    const updatedTodo = todos.map((todo) => {
+      if (todo.id === editId) {
+        todo.text = edit;
+      }
+      return todo;
+    });
+    setTodos(updatedTodo);
+    setEditMode(!editMode);
+  }
+
   return (
     <div className="App">
       <h1 className="text-center font-bold text-white text-4xl my-5">
         Todo App
       </h1>
       <div className="md:w-6/12 w-10/12 mx-auto bg-white py-5 px-5 rounded-md">
-        <form onSubmit={handleSubmit} className="flex gap-5 justify-between">
-          <input
-            className="border-b-2 w-9/12 focus:outline-none "
-            type="text"
-            value={text}
-            placeholder="Write Here!!!"
-            onChange={(event) => setText(event.target.value)}
-          />
-          <button className="bg-primary w-3/12 py-2 px-5 rounded-md text-white">
-            Add
-          </button>
-        </form>
+        {editMode ? (
+          <form onSubmit={handleUpdate} className="flex gap-5 justify-between">
+            <input
+              className="border-b-2 w-9/12 focus:outline-none "
+              type="text"
+              value={edit}
+              placeholder="Write Here!!!"
+              onChange={(event) => setEdit(event.target.value)}
+            />
+            <button className="bg-primary w-3/12 py-2 px-5 rounded-md text-white">
+              Edit
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={handleSubmit} className="flex gap-5 justify-between">
+            <input
+              className="border-b-2 w-9/12 focus:outline-none "
+              type="text"
+              value={text}
+              placeholder="Write Here!!!"
+              onChange={(event) => setText(event.target.value)}
+            />
+            <button className="bg-primary w-3/12 py-2 px-5 rounded-md text-white">
+              Add
+            </button>
+          </form>
+        )}
       </div>
       {todos?.length > 0 ? (
         <div className="md:w-6/12 w-10/12 mx-auto mt-5 bg-white py-5 px-5 rounded-md">
@@ -46,7 +86,7 @@ function App() {
                 >
                   <p>{todo.text}</p>
                   <div className="space-x-2">
-                    <button>
+                    <button onClick={() => updateTodoById(todo.id)}>
                       <svg
                         className="inline-block"
                         width="28"
